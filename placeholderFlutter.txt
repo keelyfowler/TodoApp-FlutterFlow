@@ -1,0 +1,3 @@
+I am still waiting on my education pricing plan to get approved through FlutterFlow in order to connect my repo. Created a new branch with the name flutterflow with the expectation that my application & FF will eventually overwrite it.
+
+To show understanding of version control I will create a change to fix this tyypo
