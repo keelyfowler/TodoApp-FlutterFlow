@@ -1,11 +1,14 @@
 import '/auth/firebase_auth/auth_util.dart';
+import '/backend/api_requests/api_calls.dart';
 import '/backend/backend.dart';
 import '/components/add_task_widget.dart';
 import '/components/task_widget.dart';
 import '/flutter_flow/flutter_flow_theme.dart';
 import '/flutter_flow/flutter_flow_util.dart';
 import '/index.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'tasks_model.dart';
 export 'tasks_model.dart';
@@ -29,6 +32,19 @@ class _TasksWidgetState extends State<TasksWidget> {
   void initState() {
     super.initState();
     _model = createModel(context, () => TasksModel());
+
+    // On page load action.
+    SchedulerBinding.instance.addPostFrameCallback((_) async {
+      _model.quoteResult = await GetInspirationalQuoteCall.call();
+
+      _model.quoteText = GetInspirationalQuoteCall.quote(
+        (_model.quoteResult?.jsonBody ?? ''),
+      )!;
+      _model.quoteAuthor = GetInspirationalQuoteCall.author(
+        (_model.quoteResult?.jsonBody ?? ''),
+      )!;
+      safeSetState(() {});
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) => safeSetState(() {}));
   }
@@ -192,6 +208,50 @@ class _TasksWidgetState extends State<TasksWidget> {
                     );
                   },
                 ),
+              ),
+              AutoSizeText(
+                valueOrDefault<String>(
+                  GetInspirationalQuoteCall.quote(
+                    (_model.quoteResult?.jsonBody ?? ''),
+                  ),
+                  'Keep going, you\'ve got this!',
+                ),
+                minFontSize: 7.0,
+                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                      font: GoogleFonts.inter(
+                        fontWeight:
+                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                      ),
+                      letterSpacing: 0.0,
+                      fontWeight:
+                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                    ),
+                overflow: TextOverflow.visible,
+              ),
+              Text(
+                valueOrDefault<String>(
+                  GetInspirationalQuoteCall.author(
+                    (_model.quoteResult?.jsonBody ?? ''),
+                  ),
+                  'Unknown',
+                ),
+                style: FlutterFlowTheme.of(context).bodyMedium.override(
+                      font: GoogleFonts.inter(
+                        fontWeight:
+                            FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                        fontStyle:
+                            FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                      ),
+                      letterSpacing: 0.0,
+                      fontWeight:
+                          FlutterFlowTheme.of(context).bodyMedium.fontWeight,
+                      fontStyle:
+                          FlutterFlowTheme.of(context).bodyMedium.fontStyle,
+                    ),
               ),
             ].divide(SizedBox(height: 12.0)),
           ),
